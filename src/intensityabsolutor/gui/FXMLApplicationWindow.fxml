@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+
+<VBox fx:controller="intensityabsolutor.gui.WindowController" xmlns:fx="http://javafx.com/fxml/1"
+      styleClass="mainvbox">
+    
+    <stylesheets>
+        <URL value="@WindowsStyle.css" />
+    </stylesheets>
+    
+    <HBox styleClass="hbox" fx:id="titlebox">
+        <Label styleClass="windowtext" fx:id="title" text="Absolute intensity calculator"/>
+    </HBox>
+    
+    <GridPane styleClass="gridpane">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="NEVER" />
+        </columnConstraints>
+        
+        <Label styleClass="windowtext" text="Sample spectra: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField styleClass="inputfield" fx:id="experiment" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
+        <Button text="Browse" alignment="center" onAction="#browseSample" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+        <Label styleClass="windowtext" text="Callibration light source spectra : " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField styleClass="inputfield" fx:id="callibration" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
+        <Button text="Browse" alignment="center" onAction="#browseCallibration" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        
+        <Label styleClass="windowtext" text="White light spectra with light source: " GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField styleClass="inputfield" fx:id="whitelightnosample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="500" />
+        <Button text="Browse" alignment="center" onAction="#browseWhiteLightNoSample" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+        <Label styleClass="windowtext" text="White light spectra with sample: " GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <TextField styleClass="inputfield" fx:id="whitelightwithsample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="500" />
+        <Button text="Browse" alignment="center" onAction="#browseWhiteLightSample" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        
+        <Label styleClass="windowtext" text="Output file (sample absolute intensity): " GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <TextField styleClass="inputfield" fx:id="output" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="500" />
+        <Button text="Browse" alignment="center" onAction="#browseOutput" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+    </GridPane>
+    
+    <HBox styleClass="hbox" prefWidth="500" fx:id="startsimubox">
+        <Button text="Generate absolute intensity file" alignment="center" defaultButton="true" onAction="#calculate"/>
+    </HBox>
+</VBox>
