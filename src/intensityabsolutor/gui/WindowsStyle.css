@@ -41,6 +41,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-alignment: center-left;
 }
 
+.hbox
+{
+    -fx-spacing: 15px;
+    -fx-fill-height: true;
+    -fx-alignment: center-left;
+}
+
 .inputfield
 {
     -fx-alignment: center-left;
