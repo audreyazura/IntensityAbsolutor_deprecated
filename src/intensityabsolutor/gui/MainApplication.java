@@ -5,6 +5,7 @@
  */
 package intensityabsolutor.gui;
 
+import intensityabsolutor.calculator.GUIInterface;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ import javafx.stage.Stage;
  *
  * @author audreyazura
  */
-public class MainApplication extends Application
+public class MainApplication extends Application implements GUIInterface
 {
     private Stage m_mainStage;
     
@@ -37,6 +38,7 @@ public class MainApplication extends Application
         try
         {
             Parent windowFxml = parameterWindowLoader.load();
+            ((WindowController) parameterWindowLoader.getController()).initialize(this);
             m_mainStage.setScene(new Scene(windowFxml));
             m_mainStage.sizeToScene();
 	    m_mainStage.show();
@@ -45,6 +47,12 @@ public class MainApplication extends Application
         {
             Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @Override
+    public void sendException(Exception p_exception)
+    {
+        Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, p_exception.getMessage(), p_exception);
     }
     
     public Stage getMainStage()

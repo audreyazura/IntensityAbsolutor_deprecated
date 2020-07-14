@@ -82,7 +82,7 @@
         
         <HBox styleClass="hbox">
             <Label styleClass="windowtext" text="Integration time (s): " />
-            <TextField styleClass="inputfield" fx:id="expcallibration" prefWidth="60" />
+            <TextField styleClass="inputfield" fx:id="callintegration" prefWidth="60" />
         </HBox>
     </VBox>
     
@@ -106,7 +106,7 @@
         
         <HBox styleClass="hbox">
             <Label styleClass="windowtext" text="Integration time (s): " />
-            <TextField styleClass="inputfield" fx:id="expwlnosample" prefWidth="60" />
+            <TextField styleClass="inputfield" fx:id="wlnosampleintegration" prefWidth="60" />
         </HBox>
     </VBox>
     
@@ -130,11 +130,11 @@
         
         <HBox styleClass="hbox">
             <Label styleClass="windowtext" text="Integration time (s): " />
-            <TextField styleClass="inputfield" fx:id="expwlsample" prefWidth="60" />
+            <TextField styleClass="inputfield" fx:id="wlsampleintegration" prefWidth="60" />
         </HBox>
     </VBox>
     
-    <VBox styleClass="lastvbox">   
+    <VBox styleClass="lastvbox" >   
         <GridPane styleClass="gridpane">
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" />
@@ -146,6 +146,8 @@
             <TextField styleClass="inputfield" fx:id="output" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
             <Button text="Browse" alignment="center" onAction="#browseOutput" GridPane.columnIndex="2" GridPane.rowIndex="0" />
         </GridPane>
+        
+        <Label styleClass="titlelabel" fx:id="lastlabel" />
     </VBox>
     
     <HBox styleClass="hbox" prefWidth="500" fx:id="startsimubox">

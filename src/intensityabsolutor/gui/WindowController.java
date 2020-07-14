@@ -5,10 +5,16 @@
  */
 package intensityabsolutor.gui;
 
+import intensityabsolutor.calculator.IntensityAbsolutor;
 import java.io.File;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -18,17 +24,24 @@ import javafx.stage.Stage;
  */
 public class WindowController
 {
+    @FXML private Label lastlabel;
     @FXML private TextField experiment;
     @FXML private TextField bgexperiment;
+    @FXML private TextField expintegration;
     @FXML private TextField callibration;
     @FXML private TextField bgcallibration;
+    @FXML private TextField callintegration;
     @FXML private TextField whitelightnosample;
     @FXML private TextField bgwlnosample;
+    @FXML private TextField wlnosampleintegration;
     @FXML private TextField whitelightwithsample;
     @FXML private TextField bgwlsample;
+    @FXML private TextField wlsampleintegration;
     @FXML private TextField output;
     
-    MainApplication m_mainApp;
+    private MainApplication m_mainApp;
+    private Map<String, File> m_fileMap = new HashMap<>();
+    private Map<String, BigDecimal> m_exposureMap = new HashMap<>();
     
     @FXML private void browseSample()
     {
@@ -77,12 +90,50 @@ public class WindowController
     
     @FXML private void calculate()
     {
+        try
+        {
+            m_exposureMap.put(expintegration.getId(), new BigDecimal(expintegration.getText()));
+            m_exposureMap.put(callintegration.getId(), new BigDecimal(callintegration.getText()));
+            m_exposureMap.put(wlnosampleintegration.getId(), new BigDecimal(wlnosampleintegration.getText()));
+            m_exposureMap.put(wlsampleintegration.getId(), new BigDecimal(wlsampleintegration.getText()));    
+        }
+        catch (NumberFormatException ex)
+        {
+            Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, "Error in one of exposure time.", ex);
+        }
         
+        //get file from the choicebox
+        
+        if (!m_fileMap.containsValue(new File("")))
+        {
+            IntensityAbsolutor calculator = new IntensityAbsolutor((HashMap) m_fileMap, (HashMap) m_exposureMap, m_mainApp);
+            Thread calculationThread = new Thread(calculator);
+            calculationThread.start();
+            
+            try
+            {
+                calculationThread.join();
+            }
+            catch (InterruptedException ex)
+            {
+                Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            if(calculator.hasFinished())
+            {
+                lastlabel.setText(output.getText()+" created.");
+                lastlabel.setManaged(true);
+                lastlabel.setVisible(true);
+                m_mainApp.getMainStage().sizeToScene();
+            }
+        }
     }
     
     private void browse(TextField p_outputField, String p_title)
     {
         FileChooser browser = new FileChooser();
+        
+        System.out.println(p_outputField.getId());
 	
 	browser.setTitle(p_title);
 	
@@ -105,9 +156,11 @@ public class WindowController
         {
             selectedFile = browser.showOpenDialog(new Stage());
         }
+        
         if (selectedFile != null)
         {
             p_outputField.setText(selectedFile.getAbsolutePath());
+            m_fileMap.put(p_outputField.getId(), selectedFile);
         }
         else
         {
@@ -118,5 +171,8 @@ public class WindowController
     public void initialize(MainApplication p_app)
     {
         m_mainApp = p_app;
+        lastlabel.setVisible(false);
+        lastlabel.setManaged(false);
+        m_mainApp.getMainStage().sizeToScene();
     }
 }
