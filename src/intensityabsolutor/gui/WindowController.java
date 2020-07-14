@@ -19,9 +19,13 @@ import javafx.stage.Stage;
 public class WindowController
 {
     @FXML private TextField experiment;
+    @FXML private TextField bgexperiment;
     @FXML private TextField callibration;
+    @FXML private TextField bgcallibration;
     @FXML private TextField whitelightnosample;
+    @FXML private TextField bgwlnosample;
     @FXML private TextField whitelightwithsample;
+    @FXML private TextField bgwlsample;
     @FXML private TextField output;
     
     MainApplication m_mainApp;
@@ -31,9 +35,19 @@ public class WindowController
         browse(experiment, "Chose the file with the sample spectra");
     }
     
+    @FXML private void browseBGSample()
+    {
+        browse(bgexperiment, "Chose the file with the sample background");
+    }
+    
     @FXML private void browseCallibration()
     {
         browse(callibration, "Chose the file with the callibration spectra");
+    }
+    
+    @FXML private void browseBGCallibration()
+    {
+        browse(bgcallibration, "Chose the file with the callibration background");
     }
     
     @FXML private void browseWhiteLightNoSample()
@@ -41,9 +55,19 @@ public class WindowController
         browse(whitelightnosample, "Chose the file with the white light spectra with no sample");
     }
     
+    @FXML private void browseBGWLNoSample()
+    {
+        browse(bgwlnosample, "Chose the file with the white light background with no sample");
+    }
+    
     @FXML private void browseWhiteLightSample()
     {
         browse(whitelightwithsample, "Chose the file with the white light spectra with the sample");
+    }
+    
+    @FXML private void browseBGWLSample()
+    {
+        browse(bgwlsample, "Chose the file with the white light background with the sample");
     }
     
     @FXML private void browseOutput()

@@ -3,10 +3,12 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -36,33 +38,115 @@
         </ChoiceBox>
     </HBox>
     
-    <GridPane styleClass="gridpane">
-        <columnConstraints>
-            <ColumnConstraints hgrow="NEVER" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="NEVER" />
-        </columnConstraints>
+    <VBox styleClass="internalvbox">
+        <Label styleClass="titlelabel" text="Sample spectra" />
         
-        <Label styleClass="windowtext" text="Sample spectra: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField styleClass="inputfield" fx:id="experiment" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseSample" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <GridPane styleClass="gridpane">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="NEVER" />
+            </columnConstraints>
 
-        <Label styleClass="windowtext" text="Callibration light source spectra : " GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField styleClass="inputfield" fx:id="callibration" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseCallibration" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label styleClass="windowtext" text="File: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField styleClass="inputfield" fx:id="experiment" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseSample" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Label styleClass="windowtext" text="Background: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField styleClass="inputfield" fx:id="bgexperiment" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseBGSample" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        </GridPane>
         
-        <Label styleClass="windowtext" text="White light spectra with light source: " GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField styleClass="inputfield" fx:id="whitelightnosample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseWhiteLightNoSample" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <HBox styleClass="hbox">
+            <Label styleClass="windowtext" text="Integration time (s): " />
+            <TextField styleClass="inputfield" fx:id="expintegration" prefWidth="60" />
+        </HBox>
+    </VBox>
+    
+    <VBox styleClass="internalvbox">
+        <Label styleClass="titlelabel" text="Callibration spectra" />
+        
+        <GridPane styleClass="gridpane">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="NEVER" />
+            </columnConstraints>
 
-        <Label styleClass="windowtext" text="White light spectra with sample: " GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <TextField styleClass="inputfield" fx:id="whitelightwithsample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseWhiteLightSample" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Label styleClass="windowtext" text="File: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField styleClass="inputfield" fx:id="callibration" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseCallibration" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Label styleClass="windowtext" text="Background: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField styleClass="inputfield" fx:id="bgcallibration" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseBGCallibration" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        </GridPane>
         
-        <Label styleClass="windowtext" text="Output file (sample absolute intensity): " GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <TextField styleClass="inputfield" fx:id="output" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseOutput" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-    </GridPane>
+        <HBox styleClass="hbox">
+            <Label styleClass="windowtext" text="Integration time (s): " />
+            <TextField styleClass="inputfield" fx:id="expcallibration" prefWidth="60" />
+        </HBox>
+    </VBox>
+    
+    <VBox styleClass="internalvbox">
+        <Label styleClass="titlelabel" text="White light spectra with light source" />
+        
+        <GridPane styleClass="gridpane">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="NEVER" />
+            </columnConstraints>
+
+            <Label styleClass="windowtext" text="File: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField styleClass="inputfield" fx:id="whitelightnosample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseWhiteLightNoSample" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Label styleClass="windowtext" text="Background: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField styleClass="inputfield" fx:id="bgwlnosample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseBGWLNoSample" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        </GridPane>
+        
+        <HBox styleClass="hbox">
+            <Label styleClass="windowtext" text="Integration time (s): " />
+            <TextField styleClass="inputfield" fx:id="expwlnosample" prefWidth="60" />
+        </HBox>
+    </VBox>
+    
+    <VBox styleClass="internalvbox">
+        <Label styleClass="titlelabel" text="White light spectra with sample" />
+        
+        <GridPane styleClass="gridpane">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="NEVER" />
+            </columnConstraints>
+
+            <Label styleClass="windowtext" text="File: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField styleClass="inputfield" fx:id="whitelightwithsample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseWhiteLightSample" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Label styleClass="windowtext" text="Background: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField styleClass="inputfield" fx:id="bgwlsample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseBGWLSample" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        </GridPane>
+        
+        <HBox styleClass="hbox">
+            <Label styleClass="windowtext" text="Integration time (s): " />
+            <TextField styleClass="inputfield" fx:id="expwlsample" prefWidth="60" />
+        </HBox>
+    </VBox>
+    
+    <VBox styleClass="lastvbox">   
+        <GridPane styleClass="gridpane">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="NEVER" />
+            </columnConstraints>
+
+            <Label styleClass="windowtext" text="Output file (sample absolute intensity): " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField styleClass="inputfield" fx:id="output" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
+            <Button text="Browse" alignment="center" onAction="#browseOutput" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        </GridPane>
+    </VBox>
     
     <HBox styleClass="hbox" prefWidth="500" fx:id="startsimubox">
         <Button text="Generate absolute intensity file" alignment="center" defaultButton="true" onAction="#calculate"/>

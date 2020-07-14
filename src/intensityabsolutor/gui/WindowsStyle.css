@@ -48,6 +48,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-alignment: center-left;
 }
 
+.internalvbox
+{
+    -fx-spacing: 10px;
+    -fx-alignment: top-left;
+    -fx-fill-width: true;
+    -fx-border-style: solid;
+    -fx-padding: 10px 10px 10px 10px; /*top, right, bottom, left*/
+}
+
 .inputfield
 {
     -fx-alignment: center-left;
@@ -59,13 +68,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-text-alignment: justify;
 }
 
+.lastvbox
+{
+    -fx-spacing: 10px;
+    -fx-alignment: top-left;
+    -fx-fill-width: true;
+    -fx-padding: 10px 0px 10px 0px; /*top, right, bottom, left*/
+}
+
 .mainvbox
 {
-    -fx-spacing: 30px;
+    -fx-spacing: 10px;
     -fx-alignment: top-left;
     -fx-fill-width: true;
     -fx-padding: 15px 20px 20px 20px; /*top, right, bottom, left*/
-    -fx-padding: 10px 10px 10px 10px; /*top, right, bottom, left*/
 }
 
 .titlelabel
