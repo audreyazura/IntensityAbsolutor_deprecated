@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
@@ -24,6 +25,7 @@ import javafx.stage.Stage;
  */
 public class WindowController
 {
+    @FXML private ChoiceBox callibrationlight;
     @FXML private Label lastlabel;
     @FXML private TextField experiment;
     @FXML private TextField bgexperiment;
@@ -102,7 +104,18 @@ public class WindowController
             Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, "Error in one of exposure time.", ex);
         }
         
-        //get file from the choicebox
+        switch((String) callibrationlight.getValue())
+        {
+            case "Labsphere":
+                m_fileMap.put("output", new File("ReferenceIntensities/Labsphere.intensity"));
+                break;
+            case "Ocean Opticts HL-3":
+                m_fileMap.put("output", new File("ReferenceIntensities/OceanOpticsHL-3_PLUS-CAL-INT-EXT.intensity"));
+                break;
+            default:
+                m_mainApp.sendException(new IllegalArgumentException("Select a proper value in the callibration light list."));
+                return;
+        }
         
         if (!m_fileMap.containsValue(new File("")))
         {
