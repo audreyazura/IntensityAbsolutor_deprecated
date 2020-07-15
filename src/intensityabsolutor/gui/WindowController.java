@@ -157,9 +157,8 @@ public class WindowController
     {
         FileChooser browser = new FileChooser();
         
-        System.out.println(p_outputField.getId());
-	
-	browser.setTitle(p_title);
+        browser.setTitle(p_title);
+        browser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text (*.txt)", "*.txt"), new FileChooser.ExtensionFilter("All files (*.*)", "*.*"));
 	
 	try
         {
