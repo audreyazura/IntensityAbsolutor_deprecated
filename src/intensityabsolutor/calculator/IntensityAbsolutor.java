@@ -53,10 +53,10 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            correctedSampleSpectra = (Spectra) (Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")))).divide(m_exposureMap.get("expintegration"));
-            correctedCallibrationSpectra = (Spectra) (Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")))).divide(m_exposureMap.get("callintegration"));
-            correctedWLNoSample = (Spectra) (Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")))).divide(m_exposureMap.get("wlnosampleintegration"));
-            correctedWLSample = (Spectra) (Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")))).divide(m_exposureMap.get("wlsampleintegration"));
+            correctedSampleSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")))).divide(m_exposureMap.get("expintegration")));
+            correctedCallibrationSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")))).divide(m_exposureMap.get("callintegration")));
+            correctedWLNoSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")))).divide(m_exposureMap.get("wlnosampleintegration")));
+            correctedWLSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")))).divide(m_exposureMap.get("wlsampleintegration")));
         }
         catch (DataFormatException ex)
         {
@@ -76,7 +76,7 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            sampleRelativeIntensity = (Spectra) correctedSampleSpectra.divide(correctedCallibrationSpectra);
+            sampleRelativeIntensity = new Spectra(correctedSampleSpectra.divide(correctedCallibrationSpectra));
         }
         catch (ArithmeticException ex)
         {
@@ -88,7 +88,7 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            whiteLightDivision = (Spectra) correctedWLNoSample.divide(correctedWLSample);
+            whiteLightDivision = new Spectra(correctedWLNoSample.divide(correctedWLSample));
         }
         catch (ArithmeticException ex)
         {
@@ -100,7 +100,7 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            ((Spectra) (Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).multiply(sampleRelativeIntensity).multiply(whiteLightDivision))).logToFile(m_fileMap.get("output"));
+            (new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).multiply(sampleRelativeIntensity).multiply(whiteLightDivision))).logToFile(m_fileMap.get("output"));
             m_properlyEnded = true;
         }
         catch (DataFormatException ex)

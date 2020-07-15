@@ -48,6 +48,16 @@ public class Spectra extends ContinuousFunction
         super();
     }
     
+    public Spectra(Spectra p_passedSpectra)
+    {
+        super((ContinuousFunction) p_passedSpectra);
+    }
+    
+    public Spectra(ContinuousFunction p_passedFunction)
+    {
+        super(p_passedFunction);
+    }
+    
     private Spectra (File p_inputFile, BigDecimal p_abscissaUnitMultiplier, BigDecimal p_valuesUnitMultiplier, String p_expectedExtension, int p_ncolumn, int[] p_columnToExtract) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
         super(p_inputFile, p_abscissaUnitMultiplier, p_valuesUnitMultiplier, p_expectedExtension, p_ncolumn, p_columnToExtract);
