@@ -53,10 +53,10 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            correctedSampleSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")))).divide(m_exposureMap.get("expintegration")));
-            correctedCallibrationSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")))).divide(m_exposureMap.get("callintegration")));
-            correctedWLNoSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")))).divide(m_exposureMap.get("wlnosampleintegration")));
-            correctedWLSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")))).divide(m_exposureMap.get("wlsampleintegration")));
+            correctedSampleSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).divide(m_exposureMap.get("expintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")).divide(m_exposureMap.get("expbgintegration"))));
+            correctedCallibrationSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).divide(m_exposureMap.get("callintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")).divide(m_exposureMap.get("callbgintegration"))));
+            correctedWLNoSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).divide(m_exposureMap.get("wlnosampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")).divide(m_exposureMap.get("wlnosamplebgintegration"))));
+            correctedWLSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration"))));
         }
         catch (DataFormatException ex)
         {

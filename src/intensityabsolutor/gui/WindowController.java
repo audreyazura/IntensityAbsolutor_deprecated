@@ -41,15 +41,19 @@ public class WindowController
     @FXML private TextField experiment;
     @FXML private TextField bgexperiment;
     @FXML private TextField expintegration;
+    @FXML private TextField expbgintegration;
     @FXML private TextField callibration;
     @FXML private TextField bgcallibration;
     @FXML private TextField callintegration;
+    @FXML private TextField callbgintegration;
     @FXML private TextField whitelightnosample;
     @FXML private TextField bgwlnosample;
     @FXML private TextField wlnosampleintegration;
+    @FXML private TextField wlnosamplebgintegration;
     @FXML private TextField whitelightwithsample;
     @FXML private TextField bgwlsample;
     @FXML private TextField wlsampleintegration;
+    @FXML private TextField wlsamplebgintegration;
     @FXML private TextField output;
     
     private MainApplication m_mainApp;
@@ -106,9 +110,13 @@ public class WindowController
         try
         {
             m_exposureMap.put(expintegration.getId(), new BigDecimal(expintegration.getText()));
+            m_exposureMap.put(expbgintegration.getId(), new BigDecimal(expbgintegration.getText()));
             m_exposureMap.put(callintegration.getId(), new BigDecimal(callintegration.getText()));
+            m_exposureMap.put(callbgintegration.getId(), new BigDecimal(callbgintegration.getText()));
             m_exposureMap.put(wlnosampleintegration.getId(), new BigDecimal(wlnosampleintegration.getText()));
-            m_exposureMap.put(wlsampleintegration.getId(), new BigDecimal(wlsampleintegration.getText()));    
+            m_exposureMap.put(wlnosamplebgintegration.getId(), new BigDecimal(wlnosamplebgintegration.getText()));
+            m_exposureMap.put(wlsampleintegration.getId(), new BigDecimal(wlsampleintegration.getText()));
+            m_exposureMap.put(wlsamplebgintegration.getId(), new BigDecimal(wlsamplebgintegration.getText()));
         }
         catch (NumberFormatException ex)
         {

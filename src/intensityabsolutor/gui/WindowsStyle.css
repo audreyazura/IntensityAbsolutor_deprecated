@@ -39,6 +39,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-hgap: 10px;
     -fx-vgap: 10px;
     -fx-alignment: center-left;
+    -fx-border-style: solid;
+    -fx-padding: 10px 10px 10px 10px; /*top, right, bottom, left*/
 }
 
 .hbox
@@ -46,6 +48,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-spacing: 15px;
     -fx-fill-height: true;
     -fx-alignment: center-left;
+}
+
+.integrationtext
+{
+    -fx-font-family: SourceSansPro;
+    -fx-wrap-text: true;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }
 
 .internalvbox
@@ -117,4 +127,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 {
     -fx-alignment: center;
     -fx-padding: 0px 0px 5px 0px; /*top, right, bottom, left*/
+}
+
+#lastgrid
+{
+    -fx-border-style: null;
 }
