@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.DataFormatException;
 
 /**
@@ -90,7 +92,10 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            (new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).multiply(sampleRelativeIntensity).multiply(whiteLightDivision))).logToFile(m_fileMap.get("output"));
+            TreeSet<BigDecimal> sampleSpectraAbscissa = new TreeSet(sampleRelativeIntensity.getAbscissa());
+            System.out.println(sampleSpectraAbscissa);
+            Spectra lightCallibration = new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last()));
+            (new Spectra(sampleRelativeIntensity.multiply(whiteLightDivision.multiply(lightCallibration)))).logToFile(m_fileMap.get("output"));
             m_properlyEnded = true;
         }
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)

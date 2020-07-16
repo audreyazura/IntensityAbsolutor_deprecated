@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.DataFormatException;
+import org.nevec.rjm.BigComplex;
 
 /**
  *
@@ -36,11 +37,11 @@ public class Spectra extends ContinuousFunction
 {
     static public Spectra spectraFromWinSpec(File p_winSpecFile) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
-        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "txt", 3, new int[] {0,2});
+        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "txt", " ", 3, new int[] {0,2});
     }
     static public Spectra callibrationAbsoluteIntensitySpectra(File p_passedFile) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
-        return new Spectra(p_passedFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier().divide(PhysicsTools.UnitsPrefix.NANO.getMultiplier()), "intensity", 2, new int[] {0,1});
+        return new Spectra(p_passedFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier().divide(PhysicsTools.UnitsPrefix.NANO.getMultiplier()), "intensity", "\t", 2, new int[] {0,1});
     }
     
     public Spectra()
@@ -58,9 +59,9 @@ public class Spectra extends ContinuousFunction
         super(p_passedFunction);
     }
     
-    private Spectra (File p_inputFile, BigDecimal p_abscissaUnitMultiplier, BigDecimal p_valuesUnitMultiplier, String p_expectedExtension, int p_ncolumn, int[] p_columnToExtract) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
+    private Spectra (File p_inputFile, BigDecimal p_abscissaUnitMultiplier, BigDecimal p_valuesUnitMultiplier, String p_expectedExtension, String p_separator, int p_ncolumn, int[] p_columnToExtract) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
-        super(p_inputFile, p_abscissaUnitMultiplier, p_valuesUnitMultiplier, p_expectedExtension, p_ncolumn, p_columnToExtract);
+        super(p_inputFile, p_abscissaUnitMultiplier, p_valuesUnitMultiplier, p_expectedExtension, p_separator, p_ncolumn, p_columnToExtract);
     }
     
     public void logToFile(File outputFile) throws IOException
@@ -78,5 +79,20 @@ public class Spectra extends ContinuousFunction
         }
         writer.flush();
         writer.close();
+    }
+    
+    public Spectra selectWindow(BigDecimal p_minAbscissa, BigDecimal p_maxAbscissa)
+    {
+        Spectra resizedSpectra = new Spectra();
+        
+        for(BigDecimal abscissa: m_values.keySet())
+        {
+            if(abscissa.compareTo(p_minAbscissa) < 0 || abscissa.compareTo(p_maxAbscissa) > 0)
+            {
+                m_values.remove(abscissa);
+            }
+        }
+        
+        return resizedSpectra;
     }
 }
