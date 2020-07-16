@@ -120,16 +120,40 @@ public class WindowController
         }
         catch (NumberFormatException ex)
         {
-            Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, "Error in one of exposure time.", ex);
+            NumberFormatException passedEx = new NumberFormatException("Error in one of exposure time.");
+            passedEx.setStackTrace(ex.getStackTrace());
+            m_mainApp.sendException(passedEx);
+            return;
+        }
+        
+        try
+        {
+            m_fileMap.put(experiment.getId(), new File(experiment.getText()));
+            m_fileMap.put(bgexperiment.getId(), new File(bgexperiment.getText()));
+            m_fileMap.put(callibration.getId(), new File(callibration.getText()));
+            m_fileMap.put(bgcallibration.getId(), new File(bgcallibration.getText()));
+            m_fileMap.put(whitelightnosample.getId(), new File(whitelightnosample.getText()));
+            m_fileMap.put(bgwlnosample.getId(), new File(bgwlnosample.getText()));
+            m_fileMap.put(whitelightwithsample.getId(), new File(whitelightwithsample.getText()));
+            m_fileMap.put(bgwlsample.getId(), new File(bgwlsample.getText()));
+            
+            m_fileMap.put(output.getId(), new File(output.getText()));
+        }
+        catch (NullPointerException ex)
+        {
+            NullPointerException passedEx = new NullPointerException("Error in the file addresses given.");
+            passedEx.setStackTrace(ex.getStackTrace());
+            m_mainApp.sendException(passedEx);
+            return;
         }
         
         switch((String) callibrationlight.getValue())
         {
             case "Labsphere":
-                m_fileMap.put("output", new File("ReferenceIntensities/Labsphere.intensity"));
+                m_fileMap.put("lightintensity", new File("ReferenceIntensities/Labsphere.intensity"));
                 break;
             case "Ocean Opticts HL-3":
-                m_fileMap.put("output", new File("ReferenceIntensities/OceanOpticsHL-3_PLUS-CAL-INT-EXT.intensity"));
+                m_fileMap.put("lightintensity", new File("ReferenceIntensities/OceanOpticsHL-3_PLUS-CAL-INT-EXT.intensity"));
                 break;
             default:
                 m_mainApp.sendException(new IllegalArgumentException("Select a proper value in the callibration light list."));
@@ -191,7 +215,6 @@ public class WindowController
         if (selectedFile != null)
         {
             p_outputField.setText(selectedFile.getAbsolutePath());
-            m_fileMap.put(p_outputField.getId(), selectedFile);
         }
         else
         {
