@@ -58,17 +58,7 @@ public class IntensityAbsolutor implements Runnable
             correctedWLNoSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).divide(m_exposureMap.get("wlnosampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")).divide(m_exposureMap.get("wlnosamplebgintegration"))));
             correctedWLSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration"))));
         }
-        catch (DataFormatException ex)
-        {
-            m_app.sendException(ex);
-            return;
-        }
-        catch (ArrayIndexOutOfBoundsException ex)
-        {
-            m_app.sendException(ex);
-            return;
-        }
-        catch (IOException ex)
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
         {
             m_app.sendException(ex);
             return;
@@ -103,20 +93,9 @@ public class IntensityAbsolutor implements Runnable
             (new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).multiply(sampleRelativeIntensity).multiply(whiteLightDivision))).logToFile(m_fileMap.get("output"));
             m_properlyEnded = true;
         }
-        catch (DataFormatException ex)
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
         {
             m_app.sendException(ex);
-            return;
-        }
-        catch (ArrayIndexOutOfBoundsException ex)
-        {
-            m_app.sendException(ex);
-            return;
-        }
-        catch (IOException ex)
-        {
-            m_app.sendException(ex);
-            return;
         }
     }
     
