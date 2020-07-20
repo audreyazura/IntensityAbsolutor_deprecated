@@ -177,7 +177,7 @@ public class WindowController
             
             if(calculator.hasFinished())
             {
-                lastlabel.setText(output.getText()+" created.");
+                lastlabel.setText(m_fileMap.get("output").getName()+" created.");
                 lastlabel.setManaged(true);
                 lastlabel.setVisible(true);
                 m_mainApp.getMainStage().sizeToScene();
@@ -228,5 +228,27 @@ public class WindowController
         lastlabel.setVisible(false);
         lastlabel.setManaged(false);
         m_mainApp.getMainStage().sizeToScene();
+        
+        experiment.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071013_SItint60sI700mA_1.txt");
+        bgexperiment.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071014_SItint60sBG_1.txt");
+        expintegration.setText("60");
+        expbgintegration.setText("60");
+        
+        callibration.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071009_HLWhiteLight10s_1.txt");
+        bgcallibration.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071010_HLWhiteLight10sBG_1.txt");
+        callintegration.setText("10");
+        callbgintegration.setText("10");
+        
+        whitelightnosample.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071016_WhitLightWithoutSample_1.txt");
+        bgwlnosample.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071010_HLWhiteLight10sBG_1.txt");
+        wlnosampleintegration.setText("60");
+        wlnosamplebgintegration.setText("10");
+        
+        whitelightwithsample.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071015_WhitLightWithSample_1.txt");
+        bgwlsample.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/2020071014_SItint60sBG_1.txt");
+        wlsampleintegration.setText("60");
+        wlsamplebgintegration.setText("60");
+        
+        output.setText("/home/audreyazura/Documents/Work/Experiment/AbsoluteIntensity/20200710/AbsoluteIntensities/20200710_Si_BadCalllibration.dat");
     }
 }
