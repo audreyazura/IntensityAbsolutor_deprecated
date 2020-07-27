@@ -24,12 +24,16 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 /**
@@ -70,6 +74,94 @@ public class Spectra extends ContinuousFunction
     private Spectra (File p_inputFile, BigDecimal p_abscissaUnitMultiplier, BigDecimal p_valuesUnitMultiplier, String p_expectedExtension, String p_separator, int p_ncolumn, int[] p_columnToExtract) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
         super(p_inputFile, p_abscissaUnitMultiplier, p_valuesUnitMultiplier, p_expectedExtension, p_separator, p_ncolumn, p_columnToExtract);
+    }
+    
+    @Override
+    public Spectra add(ContinuousFunction p_passedFunction)
+    {
+        Map<BigDecimal, BigDecimal> addedValues = new HashMap<>();
+        Set<BigDecimal> abscissa = new TreeSet(m_values.keySet());
+        
+        if (abscissa.equals(p_passedFunction.getAbscissa()))
+        {
+            for (BigDecimal position: abscissa)
+            {
+                addedValues.put(position, formatBigDecimal(m_values.get(position).add(p_passedFunction.getFunction().get(position))));
+            }
+        }
+        else
+        {
+            for (BigDecimal position: abscissa)
+            {
+                try
+                {
+                    addedValues.put(position, formatBigDecimal(m_values.get(position).add(p_passedFunction.getValueAtPosition(position))));
+                }
+                catch (NoSuchElementException ex)
+                {
+                    Logger.getLogger(Spectra.class.getName()).log(Level.WARNING, null, ex);
+                    break;
+                }
+            }
+        }
+        
+        return new Spectra((HashMap) addedValues);
+    }
+    
+    @Override
+    public Spectra substract(ContinuousFunction p_passedFunction)
+    {
+        return this.add(p_passedFunction.negate());
+    }
+    
+    @Override
+    public Spectra multiply(ContinuousFunction p_passedFunction)
+    {
+        Map<BigDecimal, BigDecimal> multilpliedValues = new HashMap<>();
+        Set<BigDecimal> abscissa = new TreeSet(m_values.keySet());
+        
+        if (abscissa.equals(p_passedFunction.getAbscissa()))
+        {
+            for (BigDecimal position: abscissa)
+            {
+                multilpliedValues.put(position, formatBigDecimal(m_values.get(position).multiply(p_passedFunction.getFunction().get(position))));
+            }
+        }
+        else
+        {
+            for (BigDecimal position: abscissa)
+            {
+                try
+                {
+                    multilpliedValues.put(position, formatBigDecimal(m_values.get(position).multiply(p_passedFunction.getValueAtPosition(position))));
+                }
+                catch (NoSuchElementException ex)
+                {
+                    Logger.getLogger(Spectra.class.getName()).log(Level.WARNING, null, ex);
+                    break;
+                }
+            }
+        }
+        
+        return new Spectra((HashMap) multilpliedValues);
+    }
+    
+    @Override
+    public Spectra divide(ContinuousFunction p_passedFunction)
+    {
+        return this.multiply(p_passedFunction.invert());
+    }
+    
+    @Override 
+    public Spectra divide(BigDecimal p_passedDivider)
+    {
+        return new Spectra(super.divide(p_passedDivider));
+    }
+    
+    @Override
+    public Spectra avoidZeros()
+    {
+        return new Spectra(super.avoidZeros());
     }
     
     public void logToFile(File outputFile, BigDecimal valueMultiplier) throws IOException

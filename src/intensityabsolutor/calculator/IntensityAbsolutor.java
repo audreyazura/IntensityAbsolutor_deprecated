@@ -56,10 +56,10 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            correctedSampleSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).divide(m_exposureMap.get("expintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")).divide(m_exposureMap.get("expbgintegration"))));
-            correctedCallibrationSpectra = new Spectra(((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).divide(m_exposureMap.get("callintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")).divide(m_exposureMap.get("callbgintegration")))).avoidZeros());
-            correctedWLNoSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).divide(m_exposureMap.get("wlnosampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")).divide(m_exposureMap.get("wlnosamplebgintegration"))));
-            correctedWLSample = new Spectra(((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration")))).avoidZeros());
+            correctedSampleSpectra = (Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).divide(m_exposureMap.get("expintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")).divide(m_exposureMap.get("expbgintegration")));
+            correctedCallibrationSpectra = ((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).divide(m_exposureMap.get("callintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")).divide(m_exposureMap.get("callbgintegration")))).avoidZeros();
+            correctedWLNoSample = (Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).divide(m_exposureMap.get("wlnosampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")).divide(m_exposureMap.get("wlnosamplebgintegration")));
+            correctedWLSample = ((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration")))).avoidZeros();
         }
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
         {
@@ -69,7 +69,7 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            sampleRelativeIntensity = new Spectra(correctedSampleSpectra.divide(correctedCallibrationSpectra));
+            sampleRelativeIntensity = correctedSampleSpectra.divide(correctedCallibrationSpectra);
         }
         catch (ArithmeticException ex)
         {
@@ -81,7 +81,7 @@ public class IntensityAbsolutor implements Runnable
 
         try
         {
-            whiteLightDivision = new Spectra(correctedWLNoSample.divide(correctedWLSample));
+            whiteLightDivision = correctedWLNoSample.divide(correctedWLSample);
         }
         catch (ArithmeticException ex)
         {
@@ -94,8 +94,8 @@ public class IntensityAbsolutor implements Runnable
         try
         {
             TreeSet<BigDecimal> sampleSpectraAbscissa = new TreeSet(sampleRelativeIntensity.getAbscissa());
-            Spectra lightCallibration = (new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")))).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last());
-            (new Spectra(sampleRelativeIntensity.multiply(whiteLightDivision).multiply(lightCallibration))).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
+            Spectra lightCallibration = Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last());
+            sampleRelativeIntensity.multiply(whiteLightDivision).multiply(lightCallibration).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
             m_properlyEnded = true;
         }
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
