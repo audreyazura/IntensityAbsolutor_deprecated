@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -59,6 +60,13 @@ public class WindowController
     private MainApplication m_mainApp;
     private Map<String, File> m_fileMap = new HashMap<>();
     private Map<String, BigDecimal> m_exposureMap = new HashMap<>();
+    
+    @FXML private void removedefault()
+    {
+        ObservableList<String> finalItems = callibrationlight.getItems();
+        finalItems.remove("-- Choose a light source");
+        callibrationlight.setItems(finalItems);
+    }
     
     @FXML private void browseSample()
     {
@@ -120,12 +128,13 @@ public class WindowController
         }
         catch (NumberFormatException ex)
         {
-            NumberFormatException passedEx = new NumberFormatException("Error in one of exposure time.");
+            NumberFormatException passedEx = new NumberFormatException("Error in at least one of exposure time.");
             passedEx.setStackTrace(ex.getStackTrace());
             m_mainApp.sendException(passedEx);
             return;
         }
         
+        //MAKE SOMETHING THAT DETECTS WHEN A FILE FIELD IS NULL
         try
         {
             m_fileMap.put(experiment.getId(), new File(experiment.getText()));

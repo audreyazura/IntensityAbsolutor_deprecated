@@ -28,9 +28,10 @@
     
     <HBox styleClass="hbox">
         <Label styleClass="windowtext" text="Callibration light:" />
-        <ChoiceBox fx:id="callibrationlight">
+        <ChoiceBox fx:id="callibrationlight" value="-- Choose a light source" onShown="#removedefault">
             <items>
                 <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="-- Choose a light source" />
                     <String fx:value="Labsphere" />
                     <String fx:value="Ocean Opticts HL-3" />
                 </FXCollections>
