@@ -94,6 +94,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-padding: 15px 20px 20px 20px; /*top, right, bottom, left*/
 }
 
+.popuphbox
+{
+    -fx-spacing: 15px;
+    -fx-fill-height: true;
+    -fx-alignment: center;
+}
+
 .titlelabel
 {
     -fx-font-family: SourceSansPro;

@@ -57,12 +57,31 @@ public class MainApplication extends Application implements GUIInterface
         catch (IOException ex)
         {
             Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
+//            System.exit(0);
         }
     }
     
     @Override
     public void sendException(Exception p_exception)
     {
+        Stage popupStage = new Stage();
+        
+        FXMLLoader popupLoader = new FXMLLoader(MainApplication.class.getResource("FXMLPopup.fxml"));
+        
+        try
+        {
+            Parent windowPopup = popupLoader.load();
+            ((PopupController) popupLoader.getController()).initialize(p_exception.getMessage());
+            popupStage.setScene(new Scene(windowPopup));
+            popupStage.sizeToScene();
+            popupStage.show();
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
+//            System.exit(0);
+        }
+        
         Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, p_exception.getMessage(), p_exception);
     }
     
