@@ -24,10 +24,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.DataFormatException;
-import org.nevec.rjm.BigComplex;
 
 /**
  *
@@ -59,12 +62,17 @@ public class Spectra extends ContinuousFunction
         super(p_passedFunction);
     }
     
+    public Spectra(HashMap p_function)
+    {
+        super(p_function);
+    }
+    
     private Spectra (File p_inputFile, BigDecimal p_abscissaUnitMultiplier, BigDecimal p_valuesUnitMultiplier, String p_expectedExtension, String p_separator, int p_ncolumn, int[] p_columnToExtract) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
         super(p_inputFile, p_abscissaUnitMultiplier, p_valuesUnitMultiplier, p_expectedExtension, p_separator, p_ncolumn, p_columnToExtract);
     }
     
-    public void logToFile(File outputFile) throws IOException
+    public void logToFile(File outputFile, BigDecimal valueMultiplier) throws IOException
     {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         Set<BigDecimal> abscissa = new TreeSet(m_values.keySet());
@@ -72,7 +80,7 @@ public class Spectra extends ContinuousFunction
         writer.write("Wavelength (nm)\tAbsolute intensity (μW/nm)");
         for(BigDecimal currentAbscissa: abscissa)
         {
-            BigDecimal convertedIntensity = currentAbscissa.multiply(PhysicsTools.UnitsPrefix.NANO.getMultiplier()).divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier());
+            BigDecimal convertedIntensity = m_values.get(currentAbscissa).multiply(valueMultiplier);
             
             writer.newLine();
             writer.write(currentAbscissa.divide(PhysicsTools.UnitsPrefix.NANO.getMultiplier())+"\t"+convertedIntensity);
@@ -83,16 +91,27 @@ public class Spectra extends ContinuousFunction
     
     public Spectra selectWindow(BigDecimal p_minAbscissa, BigDecimal p_maxAbscissa)
     {
-        Spectra resizedSpectra = new Spectra();
+        Map<BigDecimal, BigDecimal> resizedFunction = new HashMap(m_values);
+        List<BigDecimal> abscissaList = new ArrayList(resizedFunction.keySet());
+        int abscissaLastIndex = abscissaList.size() - 1;
+        BigDecimal previous, next;
         
-        for(BigDecimal abscissa: m_values.keySet())
+        if (abscissaList.get(1).compareTo(p_minAbscissa) < 0 || abscissaList.get(1).compareTo(p_maxAbscissa) > 0)
         {
-            if(abscissa.compareTo(p_minAbscissa) < 0 || abscissa.compareTo(p_maxAbscissa) > 0)
+            resizedFunction.remove(0);
+        }
+        for(int i = 1 ; i < abscissaLastIndex ; i += 1)
+        {
+            previous = abscissaList.get(i-1);
+            next = abscissaList.get(i+1);
+            
+            if((previous.compareTo(p_minAbscissa) < 0 || previous.compareTo(p_maxAbscissa) > 0)     //previous not in range
+                    && (next.compareTo(p_minAbscissa) < 0 || next.compareTo(p_maxAbscissa) > 0))    //next not in range
             {
-                m_values.remove(abscissa);
+                resizedFunction.remove(abscissaList.get(i));
             }
         }
         
-        return resizedSpectra;
+        return new Spectra((HashMap) resizedFunction);
     }
 }
