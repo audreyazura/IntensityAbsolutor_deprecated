@@ -16,6 +16,7 @@
  */
 package intensityabsolutor.calculator;
 
+import commonutils.PhysicsTools;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -56,9 +57,9 @@ public class IntensityAbsolutor implements Runnable
         try
         {
             correctedSampleSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).divide(m_exposureMap.get("expintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")).divide(m_exposureMap.get("expbgintegration"))));
-            correctedCallibrationSpectra = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).divide(m_exposureMap.get("callintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")).divide(m_exposureMap.get("callbgintegration"))));
+            correctedCallibrationSpectra = new Spectra(((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).divide(m_exposureMap.get("callintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")).divide(m_exposureMap.get("callbgintegration")))).avoidZeros());
             correctedWLNoSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).divide(m_exposureMap.get("wlnosampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")).divide(m_exposureMap.get("wlnosamplebgintegration"))));
-            correctedWLSample = new Spectra((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration"))));
+            correctedWLSample = new Spectra(((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration")))).avoidZeros());
         }
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
         {
@@ -93,9 +94,8 @@ public class IntensityAbsolutor implements Runnable
         try
         {
             TreeSet<BigDecimal> sampleSpectraAbscissa = new TreeSet(sampleRelativeIntensity.getAbscissa());
-            System.out.println(sampleSpectraAbscissa);
-            Spectra lightCallibration = new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last()));
-            (new Spectra(sampleRelativeIntensity.multiply(whiteLightDivision.multiply(lightCallibration)))).logToFile(m_fileMap.get("output"));
+            Spectra lightCallibration = (new Spectra(Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")))).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last());
+            (new Spectra(sampleRelativeIntensity.multiply(whiteLightDivision).multiply(lightCallibration))).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
             m_properlyEnded = true;
         }
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
