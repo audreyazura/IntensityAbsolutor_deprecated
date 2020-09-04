@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.zip.DataFormatException;
 
 /**
@@ -46,25 +45,51 @@ public class IntensityAbsolutor implements Runnable
     @Override
     public void run()
     {
-        Spectra correctedSampleSpectra = new Spectra();
-        Spectra correctedCallibrationSpectra = new Spectra();
-        Spectra correctedWLNoSample = new Spectra();
-        Spectra correctedWLSample = new Spectra();
-        Spectra sampleRelativeIntensity = new Spectra();
-        Spectra whiteLightDivision = new Spectra();
-
+        Map<String, Spectra> spectraMap = new HashMap();
+        
         try
         {
-            correctedSampleSpectra = (Spectra.spectraFromWinSpec(m_fileMap.get("experiment")).divide(m_exposureMap.get("expintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")).divide(m_exposureMap.get("expbgintegration")));
-            correctedCallibrationSpectra = ((Spectra.spectraFromWinSpec(m_fileMap.get("callibration")).divide(m_exposureMap.get("callintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")).divide(m_exposureMap.get("callbgintegration")))).avoidZeros();
-            correctedWLNoSample = (Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")).divide(m_exposureMap.get("wlnosampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")).divide(m_exposureMap.get("wlnosamplebgintegration")));
-            correctedWLSample = ((Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")).divide(m_exposureMap.get("wlsampleintegration"))).substract(Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")).divide(m_exposureMap.get("wlsamplebgintegration")))).avoidZeros();
-        }
+             spectraMap.put("sample", Spectra.spectraFromWinSpec(m_fileMap.get("experiment")));
+             spectraMap.put("sampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")));
+             spectraMap.put("callibrationLight", Spectra.spectraFromWinSpec(m_fileMap.get("callibration")));
+             spectraMap.put("callibrationLightBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")));
+             spectraMap.put("whiteLightNoSample", Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")));
+             spectraMap.put("whiteLightNoSampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")));
+             spectraMap.put("whiteLightSample", Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")));
+             spectraMap.put("whiteLightSampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")));
+             spectraMap.put("lightCallibration", Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")));
+        } 
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
         {
             m_app.sendException(ex);
             return;
         }
+        
+        //we start by making all the Spectra defined on the same interval
+        
+        BigDecimal maxFirstAbscissa = spectraMap.get("sample").getAbscissa().first();
+        BigDecimal minLastAbscissa = spectraMap.get("sample").getAbscissa().last();
+        
+        for(String key: spectraMap.keySet())
+        {
+            maxFirstAbscissa = maxFirstAbscissa.max(spectraMap.get(key).getAbscissa().first());
+            minLastAbscissa = minLastAbscissa.min(spectraMap.get(key).getAbscissa().last());
+        }
+        
+        for(String key: spectraMap.keySet())
+        {
+            spectraMap.get(key).selectWindow(maxFirstAbscissa, minLastAbscissa);
+        }
+        
+        //once done, we start the calculation of the absolute intensity
+        
+        Spectra correctedSampleSpectra = (spectraMap.get("sample").divide(m_exposureMap.get("expintegration"))).substract(spectraMap.get("sampleBG").divide(m_exposureMap.get("expbgintegration")));
+        Spectra correctedCallibrationSpectra = ((spectraMap.get("callibrationLight").divide(m_exposureMap.get("callintegration"))).substract(spectraMap.get("callibrationLightBG").divide(m_exposureMap.get("callbgintegration")))).avoidZeros();
+        Spectra correctedWLNoSample = (spectraMap.get("whiteLightNoSample").divide(m_exposureMap.get("wlnosampleintegration"))).substract(spectraMap.get("whiteLightNoSampleBG").divide(m_exposureMap.get("wlnosamplebgintegration")));
+        Spectra correctedWLSample = ((spectraMap.get("whiteLightSample").divide(m_exposureMap.get("wlsampleintegration"))).substract(spectraMap.get("whiteLightSampleBG").divide(m_exposureMap.get("wlsamplebgintegration")))).avoidZeros();
+        
+        Spectra sampleRelativeIntensity = new Spectra();
+        Spectra whiteLightDivision = new Spectra();
 
         try
         {
@@ -89,15 +114,13 @@ public class IntensityAbsolutor implements Runnable
             m_app.sendException(exToSent);
             return;
         }
-
+        
         try
         {
-            TreeSet<BigDecimal> sampleSpectraAbscissa = new TreeSet(sampleRelativeIntensity.getAbscissa());
-            Spectra lightCallibration = Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last());
-            (sampleRelativeIntensity.multiply(whiteLightDivision).multiply(lightCallibration)).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
+            (sampleRelativeIntensity.multiply(whiteLightDivision).multiply(spectraMap.get("lightCallibration"))).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
             m_properlyEnded = true;
-        }
-        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        } 
+        catch (IOException ex)
         {
             m_app.sendException(ex);
         }
