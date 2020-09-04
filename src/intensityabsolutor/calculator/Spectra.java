@@ -24,16 +24,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 /**
@@ -44,9 +37,7 @@ public class Spectra extends ContinuousFunction
 {
     static public Spectra spectraFromWinSpec(File p_winSpecFile) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
-//        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "txt", " ", 3, new int[] {0,2});
-        
-        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "csv", ",", 2, new int[] {0,1});
+        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "txt", " ", 3, new int[] {0,2});
     }
     static public Spectra callibrationAbsoluteIntensitySpectra(File p_passedFile) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
@@ -121,16 +112,16 @@ public class Spectra extends ContinuousFunction
         writer.close();
     }
     
-    public Spectra selectWindow(BigDecimal p_minAbscissa, BigDecimal p_maxAbscissa)
+    public void selectWindow(BigDecimal p_minAbscissa, BigDecimal p_maxAbscissa)
     {
-        Map<BigDecimal, BigDecimal> resizedFunction = new HashMap(m_values);
-        List<BigDecimal> abscissaList = new ArrayList(resizedFunction.keySet());
+        List<BigDecimal> abscissaList = new ArrayList(m_abscissa);
         int abscissaLastIndex = abscissaList.size() - 1;
         BigDecimal previous, next;
         
         if (abscissaList.get(1).compareTo(p_minAbscissa) < 0 || abscissaList.get(1).compareTo(p_maxAbscissa) > 0)
         {
-            resizedFunction.remove(0);
+            m_values.remove(abscissaList.get(0));
+            m_abscissa.remove(abscissaList.get(0));
         }
         for(int i = 1 ; i < abscissaLastIndex ; i += 1)
         {
@@ -140,10 +131,14 @@ public class Spectra extends ContinuousFunction
             if((previous.compareTo(p_minAbscissa) < 0 || previous.compareTo(p_maxAbscissa) > 0)     //previous not in range
                     && (next.compareTo(p_minAbscissa) < 0 || next.compareTo(p_maxAbscissa) > 0))    //next not in range
             {
-                resizedFunction.remove(abscissaList.get(i));
+                m_values.remove(abscissaList.get(i));
+                m_abscissa.remove(abscissaList.get(i));
             }
         }
-        
-        return new Spectra((HashMap) resizedFunction);
+        if (abscissaList.get(abscissaLastIndex-1).compareTo(p_minAbscissa) < 0 || abscissaList.get(abscissaLastIndex-1).compareTo(p_maxAbscissa) > 0)
+        {
+            m_values.remove(abscissaList.get(abscissaLastIndex));
+            m_abscissa.remove(abscissaList.get(abscissaLastIndex));
+        }
     }
 }
