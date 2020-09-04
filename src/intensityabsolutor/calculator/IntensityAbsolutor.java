@@ -94,7 +94,7 @@ public class IntensityAbsolutor implements Runnable
         {
             TreeSet<BigDecimal> sampleSpectraAbscissa = new TreeSet(sampleRelativeIntensity.getAbscissa());
             Spectra lightCallibration = Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")).selectWindow(sampleSpectraAbscissa.first(), sampleSpectraAbscissa.last());
-            sampleRelativeIntensity.multiply(whiteLightDivision).multiply(lightCallibration).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
+            (sampleRelativeIntensity.multiply(whiteLightDivision).multiply(lightCallibration)).logToFile(m_fileMap.get("output"), PhysicsTools.UnitsPrefix.NANO.getMultiplier().divide(PhysicsTools.UnitsPrefix.MICRO.getMultiplier()));
             m_properlyEnded = true;
         }
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
