@@ -44,7 +44,9 @@ public class Spectra extends ContinuousFunction
 {
     static public Spectra spectraFromWinSpec(File p_winSpecFile) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
-        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "txt", " ", 3, new int[] {0,2});
+//        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "txt", " ", 3, new int[] {0,2});
+        
+        return new Spectra(p_winSpecFile, PhysicsTools.UnitsPrefix.NANO.getMultiplier(), PhysicsTools.UnitsPrefix.UNITY.getMultiplier(), "csv", ",", 2, new int[] {0,1});
     }
     static public Spectra callibrationAbsoluteIntensitySpectra(File p_passedFile) throws FileNotFoundException, DataFormatException, ArrayIndexOutOfBoundsException, IOException
     {
@@ -77,85 +79,9 @@ public class Spectra extends ContinuousFunction
     }
     
     @Override
-    public Spectra add(ContinuousFunction p_passedFunction)
+    public Spectra divide(BigDecimal p_dividend)
     {
-        Map<BigDecimal, BigDecimal> addedValues = new HashMap<>();
-        Set<BigDecimal> abscissa = new TreeSet(m_values.keySet());
-        
-        if (abscissa.equals(p_passedFunction.getAbscissa()))
-        {
-            for (BigDecimal position: abscissa)
-            {
-                addedValues.put(position, formatBigDecimal(m_values.get(position).add(p_passedFunction.getFunction().get(position))));
-            }
-        }
-        else
-        {
-            for (BigDecimal position: abscissa)
-            {
-                try
-                {
-                    addedValues.put(position, formatBigDecimal(m_values.get(position).add(p_passedFunction.getValueAtPosition(position))));
-                }
-                catch (NoSuchElementException ex)
-                {
-                    Logger.getLogger(Spectra.class.getName()).log(Level.WARNING, null, ex);
-                    break;
-                }
-            }
-        }
-        
-        return new Spectra((HashMap) addedValues);
-    }
-    
-    @Override
-    public Spectra substract(ContinuousFunction p_passedFunction)
-    {
-        return this.add(p_passedFunction.negate());
-    }
-    
-    @Override
-    public Spectra multiply(ContinuousFunction p_passedFunction)
-    {
-        Map<BigDecimal, BigDecimal> multilpliedValues = new HashMap<>();
-        Set<BigDecimal> abscissa = new TreeSet(m_values.keySet());
-        
-        if (abscissa.equals(p_passedFunction.getAbscissa()))
-        {
-            for (BigDecimal position: abscissa)
-            {
-                multilpliedValues.put(position, formatBigDecimal(m_values.get(position).multiply(p_passedFunction.getFunction().get(position))));
-            }
-        }
-        else
-        {
-            for (BigDecimal position: abscissa)
-            {
-                try
-                {
-                    multilpliedValues.put(position, formatBigDecimal(m_values.get(position).multiply(p_passedFunction.getValueAtPosition(position))));
-                }
-                catch (NoSuchElementException ex)
-                {
-                    Logger.getLogger(Spectra.class.getName()).log(Level.WARNING, null, ex);
-                    break;
-                }
-            }
-        }
-        
-        return new Spectra((HashMap) multilpliedValues);
-    }
-    
-    @Override
-    public Spectra divide(ContinuousFunction p_passedFunction)
-    {
-        return this.multiply(p_passedFunction.invert());
-    }
-    
-    @Override 
-    public Spectra divide(BigDecimal p_passedDivider)
-    {
-        return new Spectra(super.divide(p_passedDivider));
+        return new Spectra(super.divide(p_dividend));
     }
     
     @Override
@@ -164,13 +90,27 @@ public class Spectra extends ContinuousFunction
         return new Spectra(super.avoidZeros());
     }
     
+    public Spectra substract(Spectra p_passedSpectra)
+    {
+        return new Spectra(super.substract(p_passedSpectra));
+    }
+    
+    public Spectra multiply(Spectra p_passedSpectra)
+    {
+        return new Spectra(super.multiply(p_passedSpectra));
+    }
+    
+    public Spectra divide(Spectra p_passedSpectra)
+    {
+        return new Spectra(super.divide(p_passedSpectra));
+    }
+    
     public void logToFile(File outputFile, BigDecimal valueMultiplier) throws IOException
     {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-        Set<BigDecimal> abscissa = new TreeSet(m_values.keySet());
         
         writer.write("Wavelength (nm)\tAbsolute intensity (μW/nm)");
-        for(BigDecimal currentAbscissa: abscissa)
+        for(BigDecimal currentAbscissa: m_abscissa)
         {
             BigDecimal convertedIntensity = m_values.get(currentAbscissa).multiply(valueMultiplier);
             
