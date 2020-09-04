@@ -237,5 +237,23 @@ public class WindowController
         lastlabel.setVisible(false);
         lastlabel.setManaged(false);
         m_mainApp.getMainStage().sizeToScene();
+        
+//        experiment.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_samp_70mA_60s_25um.csv");
+//        bgexperiment.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_samp_00mA_60s_25um.csv");
+//        expintegration.setText("60");
+//        expbgintegration.setText("60");
+//        callibration.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_std_0.6s_25um.csv");
+//        bgcallibration.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_std_0.6s_25um_bg.csv");
+//        callintegration.setText("0.6");
+//        callbgintegration.setText("0.6");
+//        whitelightnosample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_std_5s_25um.csv");
+//        bgwlnosample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_std_5s_25um_bg.csv");
+//        wlnosampleintegration.setText("5");
+//        wlnosamplebgintegration.setText("5");
+//        whitelightwithsample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_samp_5s_25um.csv");
+//        bgwlsample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_samp_5s_25um_bg.csv");
+//        wlsampleintegration.setText("5");
+//        wlsamplebgintegration.setText("5");
+//        output.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/AbsIntensity1_70mA.dat");
     }
 }
