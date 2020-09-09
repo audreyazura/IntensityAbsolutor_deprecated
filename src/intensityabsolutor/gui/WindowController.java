@@ -134,28 +134,23 @@ public class WindowController
             return;
         }
         
-        //MAKE SOMETHING THAT DETECTS WHEN A FILE FIELD IS NULL
-        try
+        m_fileMap.put(experiment.getId(), new File(experiment.getText()));
+        m_fileMap.put(bgexperiment.getId(), new File(bgexperiment.getText()));
+        m_fileMap.put(callibration.getId(), new File(callibration.getText()));
+        m_fileMap.put(bgcallibration.getId(), new File(bgcallibration.getText()));
+        m_fileMap.put(whitelightnosample.getId(), new File(whitelightnosample.getText()));
+        m_fileMap.put(bgwlnosample.getId(), new File(bgwlnosample.getText()));
+        m_fileMap.put(whitelightwithsample.getId(), new File(whitelightwithsample.getText()));
+        m_fileMap.put(bgwlsample.getId(), new File(bgwlsample.getText()));
+
+        m_fileMap.put(output.getId(), new File(output.getText()));
+        
+        if(m_fileMap.containsValue(new File("")))
         {
-            m_fileMap.put(experiment.getId(), new File(experiment.getText()));
-            m_fileMap.put(bgexperiment.getId(), new File(bgexperiment.getText()));
-            m_fileMap.put(callibration.getId(), new File(callibration.getText()));
-            m_fileMap.put(bgcallibration.getId(), new File(bgcallibration.getText()));
-            m_fileMap.put(whitelightnosample.getId(), new File(whitelightnosample.getText()));
-            m_fileMap.put(bgwlnosample.getId(), new File(bgwlnosample.getText()));
-            m_fileMap.put(whitelightwithsample.getId(), new File(whitelightwithsample.getText()));
-            m_fileMap.put(bgwlsample.getId(), new File(bgwlsample.getText()));
-            
-            m_fileMap.put(output.getId(), new File(output.getText()));
-        }
-        catch (NullPointerException ex)
-        {
-            NullPointerException passedEx = new NullPointerException("Error in the file addresses given.");
-            passedEx.setStackTrace(ex.getStackTrace());
-            m_mainApp.sendException(passedEx);
+            m_mainApp.sendException(new NullPointerException("Error in the file addresses given."));
             return;
         }
-        
+            
         switch((String) callibrationlight.getValue())
         {
             case "Labsphere":
@@ -169,28 +164,25 @@ public class WindowController
                 return;
         }
         
-        if (!m_fileMap.containsValue(new File("")))
+        IntensityAbsolutor calculator = new IntensityAbsolutor((HashMap) m_fileMap, (HashMap) m_exposureMap, m_mainApp);
+        Thread calculationThread = new Thread(calculator);
+        calculationThread.start();
+
+        try
         {
-            IntensityAbsolutor calculator = new IntensityAbsolutor((HashMap) m_fileMap, (HashMap) m_exposureMap, m_mainApp);
-            Thread calculationThread = new Thread(calculator);
-            calculationThread.start();
-            
-            try
-            {
-                calculationThread.join();
-            }
-            catch (InterruptedException ex)
-            {
-                Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            if(calculator.hasFinished())
-            {
-                lastlabel.setText(m_fileMap.get("output").getName()+" created.");
-                lastlabel.setManaged(true);
-                lastlabel.setVisible(true);
-                m_mainApp.getMainStage().sizeToScene();
-            }
+            calculationThread.join();
+        }
+        catch (InterruptedException ex)
+        {
+            Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if(calculator.hasFinished())
+        {
+            lastlabel.setText(m_fileMap.get("output").getName()+" created.");
+            lastlabel.setManaged(true);
+            lastlabel.setVisible(true);
+            m_mainApp.getMainStage().sizeToScene();
         }
     }
     
