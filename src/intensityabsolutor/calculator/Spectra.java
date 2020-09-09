@@ -99,9 +99,14 @@ public class Spectra extends ContinuousFunction
     public void logToFile(File outputFile, BigDecimal valueMultiplier) throws IOException
     {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        List<BigDecimal> abscissaList = new ArrayList(m_abscissa);
+        
+        //removing the first and last elements as they can contains some calculation errors
+        abscissaList.remove(0);
+        abscissaList.remove(abscissaList.size()-1);
         
         writer.write("Wavelength (nm)\tAbsolute intensity (μW/nm)");
-        for(BigDecimal currentAbscissa: m_abscissa)
+        for(BigDecimal currentAbscissa: abscissaList)
         {
             BigDecimal convertedIntensity = m_values.get(currentAbscissa).multiply(valueMultiplier);
             
