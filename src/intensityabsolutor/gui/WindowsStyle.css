@@ -69,7 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .inputfield
 {
-    -fx-alignment: center;
+    -fx-alignment: center-left;
 }
 
 .label
