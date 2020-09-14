@@ -16,7 +16,7 @@
  */
 package intensityabsolutor.calculator;
 
-import commonutils.PhysicsTools;
+import com.github.audreyazura.commonutils.PhysicsTools;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

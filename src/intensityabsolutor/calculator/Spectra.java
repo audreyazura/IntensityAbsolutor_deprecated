@@ -16,8 +16,8 @@
  */
 package intensityabsolutor.calculator;
 
-import commonutils.ContinuousFunction;
-import commonutils.PhysicsTools;
+import com.github.audreyazura.commonutils.ContinuousFunction;
+import com.github.audreyazura.commonutils.PhysicsTools;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -83,7 +83,7 @@ public class Spectra extends ContinuousFunction
     
     public Spectra substract(Spectra p_passedSpectra)
     {
-        return new Spectra(super.substract(p_passedSpectra));
+        return new Spectra(super.subtract(p_passedSpectra));
     }
     
     public Spectra multiply(Spectra p_passedSpectra)
