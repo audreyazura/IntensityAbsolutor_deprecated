@@ -19,7 +19,9 @@ package intensityabsolutor.gui;
 import intensityabsolutor.calculator.IntensityAbsolutor;
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +29,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -39,7 +43,7 @@ public class WindowController
 {
     @FXML private ChoiceBox callibrationlight;
     @FXML private Label lastlabel;
-    @FXML private TextField experiment;
+    @FXML private TextArea experiment;
     @FXML private TextField bgexperiment;
     @FXML private TextField expintegration;
     @FXML private TextField expbgintegration;
@@ -186,7 +190,7 @@ public class WindowController
         }
     }
     
-    private void browse(TextField p_outputField, String p_title)
+    private void browse(TextInputControl p_outputField, String p_title)
     {
         FileChooser browser = new FileChooser();
         
@@ -203,24 +207,30 @@ public class WindowController
             browser.setInitialDirectory(new File(System.getProperty("user.home")));
         }
         
-        File selectedFile = new File("");
+        List<File> selectedFileList = new ArrayList();
         if (p_outputField.equals(output))
         {
-            selectedFile = browser.showSaveDialog(new Stage());
+            selectedFileList.add(browser.showSaveDialog(new Stage()));
+        }
+        else if (p_outputField.equals(experiment))
+        {
+            selectedFileList = browser.showOpenMultipleDialog(new Stage());
         }
         else
         {
-            selectedFile = browser.showOpenDialog(new Stage());
+            selectedFileList.add(browser.showOpenDialog(new Stage()));
         }
         
-        if (selectedFile != null)
+        String fileAddressList = "";
+        for (File selectedFile: selectedFileList)
         {
-            p_outputField.setText(selectedFile.getAbsolutePath());
+            if (selectedFile != null)
+            {
+                fileAddressList += selectedFile.getAbsolutePath() + System.lineSeparator();
+            }
         }
-        else
-        {
-            p_outputField.setText("");
-        }
+        fileAddressList = fileAddressList.strip();
+        p_outputField.setText(fileAddressList);
     }
     
     public void initialize(MainApplication p_app)
