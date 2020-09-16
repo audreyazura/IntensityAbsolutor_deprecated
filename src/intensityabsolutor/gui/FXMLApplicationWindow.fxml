@@ -136,7 +136,7 @@
                 <ColumnConstraints hgrow="NEVER" />
             </columnConstraints>
 
-            <Label styleClass="windowtext" text="Output file (sample absolute intensity): " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label styleClass="windowtext" text="Output directory: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <TextField styleClass="inputfield" fx:id="output" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="500" />
             <Button text="Browse" alignment="center" onAction="#browseOutput" GridPane.columnIndex="2" GridPane.rowIndex="0" />
         </GridPane>

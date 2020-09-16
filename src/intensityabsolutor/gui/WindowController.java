@@ -16,7 +16,8 @@
  */
 package intensityabsolutor.gui;
 
-import intensityabsolutor.calculator.IntensityAbsolutor;
+import intensityabsolutor.calculator.CalculationManager;
+import intensityabsolutor.calculator.IntensityAbsolutorThread;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -62,8 +64,6 @@ public class WindowController
     @FXML private TextField output;
     
     private MainApplication m_mainApp;
-    private Map<String, File> m_fileMap = new HashMap<>();
-    private Map<String, BigDecimal> m_exposureMap = new HashMap<>();
     
     @FXML private void removedefault()
     {
@@ -114,21 +114,46 @@ public class WindowController
     
     @FXML private void browseOutput()
     {
-        browse(output, "Chose the output file");
+        DirectoryChooser browser = new DirectoryChooser();
+        
+        browser.setTitle("Chose the output file");
+        
+	try
+        {
+            String fieldText = output.getText();
+            browser.setInitialDirectory(new File((new File(fieldText)).getParent()));
+        }
+        catch (NullPointerException ex)
+        {
+            browser.setInitialDirectory(new File(System.getProperty("user.home")));
+        }
+        
+        File outFolder = browser.showDialog(new Stage());
+        
+        if (outFolder != null)
+        {
+            output.setText(outFolder.getAbsolutePath());
+        }
+        
     }
     
     @FXML private void calculate()
     {
+        List<HashMap<String, File>> experimentList  = new ArrayList<>();
+        Map<String, BigDecimal> exposureMap = new HashMap<>();
+        
+        String[] experimentFileAddresses = experiment.getText().stripTrailing().split(System.lineSeparator());
+        
         try
         {
-            m_exposureMap.put(expintegration.getId(), new BigDecimal(expintegration.getText()));
-            m_exposureMap.put(expbgintegration.getId(), new BigDecimal(expbgintegration.getText()));
-            m_exposureMap.put(callintegration.getId(), new BigDecimal(callintegration.getText()));
-            m_exposureMap.put(callbgintegration.getId(), new BigDecimal(callbgintegration.getText()));
-            m_exposureMap.put(wlnosampleintegration.getId(), new BigDecimal(wlnosampleintegration.getText()));
-            m_exposureMap.put(wlnosamplebgintegration.getId(), new BigDecimal(wlnosamplebgintegration.getText()));
-            m_exposureMap.put(wlsampleintegration.getId(), new BigDecimal(wlsampleintegration.getText()));
-            m_exposureMap.put(wlsamplebgintegration.getId(), new BigDecimal(wlsamplebgintegration.getText()));
+            exposureMap.put(expintegration.getId(), new BigDecimal(expintegration.getText()));
+            exposureMap.put(expbgintegration.getId(), new BigDecimal(expbgintegration.getText()));
+            exposureMap.put(callintegration.getId(), new BigDecimal(callintegration.getText()));
+            exposureMap.put(callbgintegration.getId(), new BigDecimal(callbgintegration.getText()));
+            exposureMap.put(wlnosampleintegration.getId(), new BigDecimal(wlnosampleintegration.getText()));
+            exposureMap.put(wlnosamplebgintegration.getId(), new BigDecimal(wlnosamplebgintegration.getText()));
+            exposureMap.put(wlsampleintegration.getId(), new BigDecimal(wlsampleintegration.getText()));
+            exposureMap.put(wlsamplebgintegration.getId(), new BigDecimal(wlsamplebgintegration.getText()));
         }
         catch (NumberFormatException ex)
         {
@@ -138,38 +163,55 @@ public class WindowController
             return;
         }
         
-        m_fileMap.put(experiment.getId(), new File(experiment.getText()));
-        m_fileMap.put(bgexperiment.getId(), new File(bgexperiment.getText()));
-        m_fileMap.put(callibration.getId(), new File(callibration.getText()));
-        m_fileMap.put(bgcallibration.getId(), new File(bgcallibration.getText()));
-        m_fileMap.put(whitelightnosample.getId(), new File(whitelightnosample.getText()));
-        m_fileMap.put(bgwlnosample.getId(), new File(bgwlnosample.getText()));
-        m_fileMap.put(whitelightwithsample.getId(), new File(whitelightwithsample.getText()));
-        m_fileMap.put(bgwlsample.getId(), new File(bgwlsample.getText()));
-
-        m_fileMap.put(output.getId(), new File(output.getText()));
-        
-        if(m_fileMap.containsValue(new File("")))
+        for (String experimentAddress: experimentFileAddresses)
         {
-            m_mainApp.sendException(new NullPointerException("Error in the file addresses given."));
-            return;
-        }
+            Map<String, File> experimentFiles = new HashMap<>();
             
-        switch((String) callibrationlight.getValue())
-        {
-            case "Labsphere":
-                m_fileMap.put("lightintensity", new File("ReferenceIntensities/Labsphere.intensity"));
-                break;
-            case "Ocean Opticts HL-3":
-                m_fileMap.put("lightintensity", new File("ReferenceIntensities/OceanOpticsHL-3_PLUS-CAL-INT-EXT.intensity"));
-                break;
-            default:
-                m_mainApp.sendException(new IllegalArgumentException("Select a proper value in the callibration light list."));
+            String[] splittedAddress = experimentAddress.split("/"); 
+            
+            experimentFiles.put(experiment.getId(), new File(experimentAddress));
+            experimentFiles.put(bgexperiment.getId(), new File(bgexperiment.getText()));
+            experimentFiles.put(callibration.getId(), new File(callibration.getText()));
+            experimentFiles.put(bgcallibration.getId(), new File(bgcallibration.getText()));
+            experimentFiles.put(whitelightnosample.getId(), new File(whitelightnosample.getText()));
+            experimentFiles.put(bgwlnosample.getId(), new File(bgwlnosample.getText()));
+            experimentFiles.put(whitelightwithsample.getId(), new File(whitelightwithsample.getText()));
+            experimentFiles.put(bgwlsample.getId(), new File(bgwlsample.getText()));
+
+            if (!splittedAddress[splittedAddress.length-1].equals(""))
+            {
+                experimentFiles.put(output.getId(), new File(String.join("/", output.getText(), "AbsoluteIntensity_"+splittedAddress[splittedAddress.length-1])));
+            }
+            else
+            {
+                m_mainApp.sendException(new NullPointerException("Error in the input file addresses given."));
                 return;
+            }
+
+            if(experimentFiles.containsValue(new File("")))
+            {
+                m_mainApp.sendException(new NullPointerException("Error in the file addresses given."));
+                return;
+            }
+
+            switch((String) callibrationlight.getValue())
+            {
+                case "Labsphere":
+                    experimentFiles.put("lightintensity", new File("ReferenceIntensities/Labsphere.intensity"));
+                    break;
+                case "Ocean Opticts HL-3":
+                    experimentFiles.put("lightintensity", new File("ReferenceIntensities/OceanOpticsHL-3_PLUS-CAL-INT-EXT.intensity"));
+                    break;
+                default:
+                    m_mainApp.sendException(new IllegalArgumentException("Select a proper value in the callibration light list."));
+                    return;
+            }
+            
+            experimentList.add((HashMap) experimentFiles);
         }
         
-        IntensityAbsolutor calculator = new IntensityAbsolutor((HashMap) m_fileMap, (HashMap) m_exposureMap, m_mainApp);
-        Thread calculationThread = new Thread(calculator);
+        CalculationManager calculationModule = new CalculationManager(experimentList, exposureMap, m_mainApp);
+        Thread calculationThread = new Thread(calculationModule);
         calculationThread.start();
 
         try
@@ -179,15 +221,29 @@ public class WindowController
         catch (InterruptedException ex)
         {
             Logger.getLogger(WindowController.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(0);
         }
-
-        if(calculator.hasFinished())
+        
+        ArrayList<String> errorFiles = calculationModule.getErrorFiles();
+        String printMessage = "";
+        
+        if(errorFiles.size() == 0)
         {
-            lastlabel.setText(m_fileMap.get("output").getName()+" created.");
-            lastlabel.setManaged(true);
-            lastlabel.setVisible(true);
-            m_mainApp.getMainStage().sizeToScene();
+            printMessage = "Error with files:\n";
+            for (String fileName: errorFiles)
+            {
+                printMessage += "\t" + fileName + "\n";
+            }
         }
+        else
+        {
+            printMessage = "All absolute intensity files have been properly created.";
+        }
+        
+        lastlabel.setText(printMessage.stripTrailing());
+        lastlabel.setManaged(true);
+        lastlabel.setVisible(true);
+        m_mainApp.getMainStage().sizeToScene();
     }
     
     private void browse(TextInputControl p_outputField, String p_title)
@@ -227,6 +283,13 @@ public class WindowController
             if (selectedFile != null)
             {
                 fileAddressList += selectedFile.getAbsolutePath() + System.lineSeparator();
+            }
+            else
+            {
+                if (fileAddressList.equals("") && selectedFileList.size() == 1)
+                {
+                    fileAddressList = p_outputField.getText();
+                }
             }
         }
         fileAddressList = fileAddressList.strip();
