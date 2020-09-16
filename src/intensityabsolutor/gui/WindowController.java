@@ -229,15 +229,15 @@ public class WindowController
         
         if(errorFiles.size() == 0)
         {
+            printMessage = "All absolute intensity files have been successfully created.";
+        }
+        else
+        {
             printMessage = "Error with files:\n";
             for (String fileName: errorFiles)
             {
                 printMessage += "\t" + fileName + "\n";
             }
-        }
-        else
-        {
-            printMessage = "All absolute intensity files have been properly created.";
         }
         
         lastlabel.setText(printMessage.stripTrailing());
@@ -255,7 +255,7 @@ public class WindowController
 	
 	try
         {
-            String fieldText = p_outputField.getText();
+            String fieldText = p_outputField.getText().split(System.lineSeparator())[0];
             browser.setInitialDirectory(new File((new File(fieldText)).getParent()));
         }
         catch (NullPointerException ex)
@@ -277,21 +277,26 @@ public class WindowController
             selectedFileList.add(browser.showOpenDialog(new Stage()));
         }
         
-        String fileAddressList = "";
-        for (File selectedFile: selectedFileList)
+        String fileAddressList = p_outputField.getText();
+        if (selectedFileList != null)
         {
-            if (selectedFile != null)
+            fileAddressList = "";
+            for (File selectedFile: selectedFileList)
             {
-                fileAddressList += selectedFile.getAbsolutePath() + System.lineSeparator();
-            }
-            else
-            {
-                if (fileAddressList.equals("") && selectedFileList.size() == 1)
+                if (selectedFile != null)
                 {
-                    fileAddressList = p_outputField.getText();
+                    fileAddressList += selectedFile.getAbsolutePath() + System.lineSeparator();
+                }
+                else
+                {
+                    if (fileAddressList.equals("") && selectedFileList.size() == 1)
+                    {
+                        fileAddressList = p_outputField.getText();
+                    }
                 }
             }
         }
+        
         fileAddressList = fileAddressList.strip();
         p_outputField.setText(fileAddressList);
     }
