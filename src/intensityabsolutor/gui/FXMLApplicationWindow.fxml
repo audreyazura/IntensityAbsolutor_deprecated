@@ -145,6 +145,6 @@
     </VBox>
     
     <HBox styleClass="hbox" prefWidth="500" fx:id="startsimubox">
-        <Button text="Generate absolute intensity file" alignment="center" defaultButton="true" onAction="#calculate"/>
+        <Button text="Generate absolute intensity files" alignment="center" defaultButton="true" onAction="#calculate"/>
     </HBox>
 </VBox>
