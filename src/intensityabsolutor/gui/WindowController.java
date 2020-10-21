@@ -17,7 +17,6 @@
 package intensityabsolutor.gui;
 
 import intensityabsolutor.calculator.CalculationManager;
-import intensityabsolutor.calculator.IntensityAbsolutorThread;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
