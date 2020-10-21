@@ -73,7 +73,7 @@ public class WindowController
     
     @FXML private void browseSample()
     {
-        browse(experiment, "Chose the file with the sample spectra");
+        browse(experiment, "Chose the files with the sample spectra");
     }
     
     @FXML private void browseBGSample()
@@ -263,11 +263,7 @@ public class WindowController
         }
         
         List<File> selectedFileList = new ArrayList();
-        if (p_outputField.equals(output))
-        {
-            selectedFileList.add(browser.showSaveDialog(new Stage()));
-        }
-        else if (p_outputField.equals(experiment))
+        if (p_outputField.equals(experiment))
         {
             selectedFileList = browser.showOpenMultipleDialog(new Stage());
         }
