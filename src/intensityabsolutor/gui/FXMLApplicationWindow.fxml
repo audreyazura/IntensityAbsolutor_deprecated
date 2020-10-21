@@ -128,28 +128,6 @@
         <TextField styleClass="inputfield" fx:id="wlnosamplebgintegration" GridPane.columnIndex="3" GridPane.rowIndex="2" maxWidth="60" />
     </GridPane>
     
-    <GridPane styleClass="gridpane">
-        <columnConstraints>
-            <ColumnConstraints hgrow="NEVER" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="NEVER" />
-            <ColumnConstraints hgrow="NEVER" halignment="center" />
-        </columnConstraints>
-
-        <Label styleClass="titlelabel" text="White light spectra with light source" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3" />
-        <Label styleClass="integrationtext" text="Integration time (s)" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="80" />
-        
-        <Label styleClass="windowtext" text="File: " GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="right" />
-        <TextField styleClass="inputfield" fx:id="whitelightnosample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseWhiteLightNoSample" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <TextField styleClass="inputfield" fx:id="wlnosampleintegration" GridPane.columnIndex="3" GridPane.rowIndex="1" maxWidth="60" />
-        
-        <Label styleClass="windowtext" text="Background: " GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField styleClass="inputfield" fx:id="bgwlnosample" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="500" />
-        <Button text="Browse" alignment="center" onAction="#browseBGWLNoSample" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-        <TextField styleClass="inputfield" fx:id="wlnosamplebgintegration" GridPane.columnIndex="3" GridPane.rowIndex="2" maxWidth="60" />
-    </GridPane>
-    
     <VBox styleClass="lastvbox" >   
         <GridPane styleClass="gridpane" fx:id="lastgrid">
             <columnConstraints>
