@@ -56,7 +56,9 @@ public class CalculationManager implements Runnable
             }
             catch (InterruptedException ex)
             {
-                sendException(ex);
+                InterruptedException exToSend = new InterruptedException("Thread-" + threadWalker + " execution interrupted.");
+                exToSend.setStackTrace(ex.getStackTrace());
+                sendException(exToSend);
                 System.exit(0);
             }
             

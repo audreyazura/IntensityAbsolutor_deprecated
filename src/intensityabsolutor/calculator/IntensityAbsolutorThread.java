@@ -49,19 +49,109 @@ public class IntensityAbsolutorThread extends Thread
         
         try
         {
-             spectraMap.put("sample", Spectra.spectraFromWinSpec(m_fileMap.get("experiment")));
-             spectraMap.put("sampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")));
-             spectraMap.put("callibrationLight", Spectra.spectraFromWinSpec(m_fileMap.get("callibration")));
-             spectraMap.put("callibrationLightBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")));
-             spectraMap.put("whiteLightNoSample", Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")));
-             spectraMap.put("whiteLightNoSampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")));
-             spectraMap.put("whiteLightSample", Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")));
-             spectraMap.put("whiteLightSampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")));
-             spectraMap.put("lightCallibration", Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")));
+            spectraMap.put("sample", Spectra.spectraFromWinSpec(m_fileMap.get("experiment")));
         } 
         catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
         {
-            m_manager.sendException(ex);
+            Exception exToSent = new Exception("Problem with the experiment file: " + m_fileMap.get("experiment"));
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+        
+        try
+        {
+            spectraMap.put("sampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgexperiment")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the background of the experiment.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+            
+        try
+        {
+            spectraMap.put("callibrationLight", Spectra.spectraFromWinSpec(m_fileMap.get("callibration")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the spectra under standard light.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+            
+        try
+        {
+            spectraMap.put("callibrationLightBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgcallibration")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the background of the  spectra under standard light.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+            
+        try
+        {
+            spectraMap.put("whiteLightNoSample", Spectra.spectraFromWinSpec(m_fileMap.get("whitelightnosample")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the file for the white light with no sample.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+                
+        try
+        {
+            spectraMap.put("whiteLightNoSampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgwlnosample")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the file for the background of the white light with no sample.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+                
+        try
+        {
+            spectraMap.put("whiteLightSample", Spectra.spectraFromWinSpec(m_fileMap.get("whitelightwithsample")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the file for the white light with sample.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+                
+        try
+        {
+            spectraMap.put("whiteLightSampleBG", Spectra.spectraFromWinSpec(m_fileMap.get("bgwlsample")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with the file for the background of the white light with sample.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
+            return;
+        }
+                
+        try
+        {
+            spectraMap.put("lightCallibration", Spectra.callibrationAbsoluteIntensitySpectra(m_fileMap.get("lightintensity")));
+        } 
+        catch (DataFormatException | ArrayIndexOutOfBoundsException | IOException ex)
+        {
+            Exception exToSent = new Exception("Problem with file of the absolute intensity of the standard light.");
+            exToSent.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSent);
             return;
         }
         
@@ -122,7 +212,9 @@ public class IntensityAbsolutorThread extends Thread
         } 
         catch (IOException ex)
         {
-            m_manager.sendException(ex);
+            IOException exToSend = new IOException("Problem when calculating the last step for the absolute intensity.");
+            exToSend.setStackTrace(ex.getStackTrace());
+            m_manager.sendException(exToSend);
         }
     }
     
