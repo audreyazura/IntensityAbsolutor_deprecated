@@ -17,10 +17,13 @@
 package intensityabsolutor.gui;
 
 import intensityabsolutor.calculator.GUIInterface;
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -42,6 +45,19 @@ public class MainApplication extends Application implements GUIInterface
     @Override
     public void start(Stage stage)
     {
+        //find the reference intensities given
+        HashMap<String, File> referenceIntensityFiles = new HashMap<>();
+        String referenceDirectoryPath = "ReferenceIntensities/";
+        File referenceDirectory = new File(referenceDirectoryPath);
+        for (String fileName: referenceDirectory.list())
+        {
+            String[] fileNameSplit = fileName.split("\\.");
+            if (fileNameSplit.length > 0 && fileNameSplit[fileNameSplit.length-1].equals("intensity"))
+            {
+                referenceIntensityFiles.put(fileNameSplit[0], new File(referenceDirectoryPath + fileName));
+            }
+        }
+        
         m_mainStage = stage;
         
         FXMLLoader parameterWindowLoader = new FXMLLoader(MainApplication.class.getResource("FXMLApplicationWindow.fxml"));
@@ -49,7 +65,7 @@ public class MainApplication extends Application implements GUIInterface
         try
         {
             Parent windowFxml = parameterWindowLoader.load();
-            ((WindowController) parameterWindowLoader.getController()).initialize(this);
+            ((WindowController) parameterWindowLoader.getController()).initialize(this, referenceIntensityFiles);
             m_mainStage.setScene(new Scene(windowFxml));
             m_mainStage.sizeToScene();
 	    m_mainStage.show();
@@ -64,23 +80,25 @@ public class MainApplication extends Application implements GUIInterface
     @Override
     public void sendException(Exception p_exception)
     {
-        Stage popupStage = new Stage();
-        
-        FXMLLoader popupLoader = new FXMLLoader(MainApplication.class.getResource("FXMLPopup.fxml"));
-        
-        try
+        Platform.runLater(() ->
         {
-            Parent windowPopup = popupLoader.load();
-            ((PopupController) popupLoader.getController()).initialize(p_exception.getMessage());
-            popupStage.setScene(new Scene(windowPopup));
-            popupStage.sizeToScene();
-            popupStage.show();
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
-//            System.exit(0);
-        }
+           Stage popupStage = new Stage();
+        
+            FXMLLoader popupLoader = new FXMLLoader(MainApplication.class.getResource("FXMLPopup.fxml"));
+
+            try
+            {
+                Parent windowPopup = popupLoader.load();
+                ((PopupController) popupLoader.getController()).initialize(p_exception.getMessage());
+                popupStage.setScene(new Scene(windowPopup));
+                popupStage.sizeToScene();
+                popupStage.show();
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+        });
         
         Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, p_exception.getMessage(), p_exception);
     }
