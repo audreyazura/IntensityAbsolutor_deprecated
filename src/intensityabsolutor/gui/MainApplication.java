@@ -73,7 +73,6 @@ public class MainApplication extends Application implements GUIInterface
         catch (IOException ex)
         {
             Logger.getLogger(MainApplication.class.getName()).log(Level.SEVERE, null, ex);
-//            System.exit(0);
         }
     }
     
