@@ -47,7 +47,7 @@ public class MainApplication extends Application implements GUIInterface
     {
         //find the reference intensities given
         HashMap<String, File> referenceIntensityFiles = new HashMap<>();
-        String referenceDirectoryPath = "ReferenceIntensities/";
+        String referenceDirectoryPath = "ressources/ReferenceIntensities/";
         File referenceDirectory = new File(referenceDirectoryPath);
         for (String fileName: referenceDirectory.list())
         {
