@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,10 +109,12 @@ public class Spectra extends ContinuousFunction
         writer.write("Wavelength (nm)\tAbsolute intensity (μW/nm)");
         for(BigDecimal currentAbscissa: abscissaList)
         {
-            BigDecimal convertedIntensity = m_values.get(currentAbscissa).multiply(valueMultiplier);
+            //new scale: number.scale() - number.precision() gives the number of digits after the point in scientific notation. Setting the scale to this + 11 gives us at least 10 digits after the points, which is enough
+            BigDecimal currentValue = m_values.get(currentAbscissa);
+            BigDecimal convertedIntensity = (currentValue.multiply(valueMultiplier)).setScale(currentValue.scale() - currentValue.precision() + 11, RoundingMode.HALF_UP).stripTrailingZeros();
             
             writer.newLine();
-            writer.write(currentAbscissa.divide(PhysicsTools.UnitsPrefix.NANO.getMultiplier())+"\t"+convertedIntensity);
+            writer.write(currentAbscissa.divide(PhysicsTools.UnitsPrefix.NANO.getMultiplier()) + "\t" + convertedIntensity);
         }
         writer.flush();
         writer.close();
@@ -144,6 +147,24 @@ public class Spectra extends ContinuousFunction
         {
             m_values.remove(abscissaList.get(abscissaLastIndex));
             m_abscissa.remove(abscissaList.get(abscissaLastIndex));
+        }
+        
+        //if the first abscissa is still below the minimal abscissa, we replace it explicitly
+        if (m_abscissa.first().compareTo(p_minAbscissa) < 0)
+        {
+            m_values.put(p_minAbscissa, getValueAtPosition(p_minAbscissa));
+            m_values.remove(m_abscissa.first());
+            m_abscissa.remove(m_abscissa.first());
+            m_abscissa.add(p_minAbscissa);
+        }
+        
+        //if the last abscissa is still above the max abscissa, we replace it explicitly
+        if(m_abscissa.last().compareTo(p_maxAbscissa) > 0)
+        {
+            m_values.put(p_maxAbscissa, getValueAtPosition(p_maxAbscissa));
+            m_values.remove(m_abscissa.last());
+            m_abscissa.remove(m_abscissa.last());
+            m_abscissa.add(p_maxAbscissa);
         }
     }
 }
