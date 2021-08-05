@@ -72,8 +72,8 @@ public class IntensityAbsolutorThread extends Thread
         
         for(String key: spectraMap.keySet())
         {
-            maxFirstAbscissa = maxFirstAbscissa.max(spectraMap.get(key).getAbscissa().first());
-            minLastAbscissa = minLastAbscissa.min(spectraMap.get(key).getAbscissa().last());
+            maxFirstAbscissa = maxFirstAbscissa.max(spectraMap.get(key).start());
+            minLastAbscissa = minLastAbscissa.min(spectraMap.get(key).end());
         }
         
         for(String key: spectraMap.keySet())
