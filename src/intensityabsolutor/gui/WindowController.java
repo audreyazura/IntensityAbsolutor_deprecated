@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -62,12 +64,14 @@ public class WindowController
     @FXML private TextField wlsamplebgintegration;
     @FXML private TextField output;
     
+    private HashMap<String, File> m_referenceIntensities;
     private MainApplication m_mainApp;
+    private String m_defaultCallibrationLight = "-- Choose a light source";
     
     @FXML private void removedefault()
     {
         ObservableList<String> finalItems = callibrationlight.getItems();
-        finalItems.remove("-- Choose a light source");
+        finalItems.remove(m_defaultCallibrationLight);
         callibrationlight.setItems(finalItems);
     }
     
@@ -115,7 +119,7 @@ public class WindowController
     {
         DirectoryChooser browser = new DirectoryChooser();
         
-        browser.setTitle("Chose the output file");
+        browser.setTitle("Chose the output directory");
         
 	try
         {
@@ -193,18 +197,7 @@ public class WindowController
                 return;
             }
 
-            switch((String) callibrationlight.getValue())
-            {
-                case "Labsphere":
-                    experimentFiles.put("lightintensity", new File("ReferenceIntensities/Labsphere.intensity"));
-                    break;
-                case "Ocean Opticts HL-3":
-                    experimentFiles.put("lightintensity", new File("ReferenceIntensities/OceanOpticsHL-3_PLUS-CAL-INT-EXT.intensity"));
-                    break;
-                default:
-                    m_mainApp.sendException(new IllegalArgumentException("Select a proper value in the callibration light list."));
-                    return;
-            }
+            experimentFiles.put("lightintensity", m_referenceIntensities.get((String) callibrationlight.getValue()));
             
             experimentList.add((HashMap) experimentFiles);
         }
@@ -296,29 +289,36 @@ public class WindowController
         p_outputField.setText(fileAddressList);
     }
     
-    public void initialize(MainApplication p_app)
+    public void initialize(MainApplication p_app, Map<String, File> p_referenceIntensities)
     {
         m_mainApp = p_app;
         lastlabel.setVisible(false);
         lastlabel.setManaged(false);
         m_mainApp.getMainStage().sizeToScene();
         
-//        experiment.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_samp_70mA_60s_25um.csv");
-//        bgexperiment.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_samp_00mA_60s_25um.csv");
+        m_referenceIntensities = new HashMap(p_referenceIntensities);
+        TreeSet<String> referencesSet = new TreeSet(m_referenceIntensities.keySet());
+        referencesSet.add(m_defaultCallibrationLight);
+        ObservableList<String> references = FXCollections.observableArrayList(referencesSet);
+        callibrationlight.setItems(references);
+        callibrationlight.setValue(m_defaultCallibrationLight);
+        
+//        experiment.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_samp_70mA_60s_25um.txt");
+//        bgexperiment.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_samp_00mA_60s_25um.txt");
 //        expintegration.setText("60");
 //        expbgintegration.setText("60");
-//        callibration.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_std_0.6s_25um.csv");
-//        bgcallibration.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_std_0.6s_25um_bg.csv");
+//        callibration.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_std_0.6s_25um.txt");
+//        bgcallibration.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absolute_std_0.6s_25um_bg.txt");
 //        callintegration.setText("0.6");
 //        callbgintegration.setText("0.6");
-//        whitelightnosample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_std_5s_25um.csv");
-//        bgwlnosample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_std_5s_25um_bg.csv");
+//        whitelightnosample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_std_5s_25um.txt");
+//        bgwlnosample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_std_5s_25um_bg.txt");
 //        wlnosampleintegration.setText("5");
 //        wlnosamplebgintegration.setText("5");
-//        whitelightwithsample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_samp_5s_25um.csv");
-//        bgwlsample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_samp_5s_25um_bg.csv");
+//        whitelightwithsample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_samp_5s_25um.txt");
+//        bgwlsample.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/csv/absorption_samp_5s_25um_bg.txt");
 //        wlsampleintegration.setText("5");
 //        wlsamplebgintegration.setText("5");
-//        output.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/AbsIntensity1_70mA.dat");
+//        output.setText("/home/audreyazura/Documents/Work/TestData/HiroseAbsoluteIntensity/SampleSet2/");
     }
 }
